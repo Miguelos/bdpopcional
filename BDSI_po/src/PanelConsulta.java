@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import javax.swing.JButton;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumnModel;
 
 import java.sql.ResultSet;
 
@@ -100,6 +102,8 @@ public class PanelConsulta extends PanelSQL{
 			modelo.addColumn("Parcela");
 			modelo.addColumn("Abono");
 			modelo.addColumn("Fecha");
+			Object[] cab = {"cod_Actividad","Productor","Parcela","Abono","Fecha"};
+			modelo.addRow(cab);
 			rs.last();
 			int rowCount = rs.getRow();
 			System.out.println("ROWCOUNTnuevo"+rowCount);
@@ -132,7 +136,7 @@ public class PanelConsulta extends PanelSQL{
 			
 			getConsultaTable().removeAll();
 			getConsultaTable().setModel(modelo);
-			add(getConsultaTable(), BorderLayout.CENTER);
+			add(getConsultaTable(), BorderLayout.SOUTH);
 			System.out.println(getConsultaTable().toString());
 			
 		} catch (SQLException e) {
