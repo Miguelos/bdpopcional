@@ -9,13 +9,13 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 
-//import java.sql.Connection;
-//import java.sql.DriverManager;
-//import java.sql.SQLException;
-//import java.sql.Statement;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 
-import com.mysql.jdbc.Connection;
-import com.mysql.jdbc.Statement;
+//import com.mysql.jdbc.Connection;
+//import com.mysql.jdbc.Statement;
 
 
 public class Principal extends JFrame{
@@ -93,6 +93,8 @@ public class Principal extends JFrame{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					setContentPane(PanelConsulta.getInstance());
+					setSize(500, 300);
+
 				}
 				
 			});
@@ -113,6 +115,7 @@ public class Principal extends JFrame{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					setContentPane(PanelInsertar.getInstance());
+					setSize(500, 200);
 
 				}
 				
@@ -130,6 +133,7 @@ public class Principal extends JFrame{
 	public static Connection getConnection() throws SQLException {
 		if(connection == null){
 			//DriverManager.registerDriver(new Driver());
+			DriverManager.registerDriver(new com.mysql.jdbc.Driver());
 			connection = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/test", "root", "mysql121");
 		}
 		return connection;
@@ -154,15 +158,15 @@ public class Principal extends JFrame{
 		try
 		{	
 			//Conectar con la base de datos
-//			getConnection(); //esta linea no es necesaria.
-//			getStatement();
-	
+			getConnection(); //esta linea no es necesaria.
+			getStatement();
+			getStatement().executeUpdate("insert into maestra_actividad values (666,666);");
+			
 			//Crear la interfaz
 			Principal.getInstance();
 			
 			//Cerrar la conexión con la base de datos
-//			getStatement().close();
-//			getConnection().commit();
+			//getStatement().close();
 			 
 		} 
 		catch (Exception e)

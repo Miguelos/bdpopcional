@@ -4,7 +4,11 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Array;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -22,7 +26,7 @@ import javax.swing.JTextField;
 
 import org.freixas.jcalendar.JCalendar;
 
-import com.mysql.jdbc.Statement;
+//import com.mysql.jdbc.Statement;
 
 
 public class PanelSQL extends JPanel{
@@ -38,6 +42,7 @@ public class PanelSQL extends JPanel{
 	private JComboBox codActividadBox = null;
 	private JComboBox productorBox = null;
 	private JButton fechaBox = null;
+	private long fecha = 0; //tiempo trascurrido desde la epoca
 	private JCalendar calendario = null;
 	private JComboBox parcelaBox = null;
 	private JComboBox codAbonoBox = null;
@@ -106,19 +111,28 @@ public class PanelSQL extends JPanel{
 
 	public JComboBox getCodActividadBox() {
 		if(codActividadBox == null){
-			Object[] lista = {"123","321","213"};;
 			// Mostrar los codigos de actividad disponibles
-//			try {
-	//			ResultSet rs = (ResultSet) getStatement().executeQuery(/*TODO obtener todos los cod actividad*/"");
+			try {
+			ResultSet rs = (ResultSet) getStatement().executeQuery("select distinct x from maestra_actividad;");
+			rs.last();
+			int rowCount = rs.getRow();
+			rs.first();
+			Object[] lista = new Object[rowCount];
+			lista[0] = rs.getObject(1);
+			System.out.println(rowCount);
 				//TODO obtener los strings del resultset rs
-				
-//				rs.close();
-				
-//			} catch (SQLException e) {
-//				e.printStackTrace();
-//			}
-			
-			codActividadBox = new JComboBox(lista);
+			int i = 1;
+			while (rs.next()){
+				   lista[i] = rs.getObject(1);
+				   System.out.println(i);
+				   i++;
+				}
+				rs.close();
+			codActividadBox = new JComboBox(lista);	
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		
 
 		}
 		return codActividadBox;
@@ -162,10 +176,7 @@ public class PanelSQL extends JPanel{
 	}
 	
 	protected void getCalendario() {
-		calendario = new JCalendar(Calendar.getInstance(Locale.FRENCH),
-			    Locale.FRENCH,
-			    JCalendar.DISPLAY_DATE | JCalendar.DISPLAY_TIME,
-			    false);
+		calendario = new JCalendar(JCalendar.DISPLAY_DATE | JCalendar.DISPLAY_TIME,false);
 		final JDialog calendarioDialog = new JDialog();
 		final JPanel calendarioPanel = new JPanel();
 		calendarioPanel.setLayout(new BorderLayout());
@@ -177,6 +188,8 @@ public class PanelSQL extends JPanel{
 				getFechaBox().setText(calendario.getCalendar().get(Calendar.YEAR)+"-"+
 						(1+calendario.getCalendar().get(Calendar.MONTH))+"-"+
 						calendario.getCalendar().get(Calendar.DAY_OF_MONTH));
+				fecha = calendario.getCalendar().getTime().getTime();
+				System.out.println(fecha);
 				calendarioDialog.setEnabled(false);		
 				calendarioDialog.setVisible(false);
 
