@@ -4,6 +4,7 @@ import java.awt.event.ActionListener;
 import java.sql.SQLException;
 
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -26,7 +27,9 @@ public class PanelInsertar extends PanelSQL{
 	 * @return instancia única de la clase PanelInsertar
 	 */
     public static PanelInsertar getInstance() {
-    	if(panelInsertar == null) panelInsertar = new PanelInsertar();
+    	if(panelInsertar == null){
+    		panelInsertar = new PanelInsertar();
+    	}
         return panelInsertar;
     }	
 	
@@ -50,7 +53,8 @@ public class PanelInsertar extends PanelSQL{
 							/*...*/);
 				}
 				
-			});		}
+			});		
+		}
 		return insertarButton;
 	}
 
@@ -60,20 +64,22 @@ public class PanelInsertar extends PanelSQL{
 	 * @param codActividad
 	 */
 	public void insertar(String codActividad/*...*/){
-//		try {
+		try {
 			/*
 			 * Ejecutar la consulta sql
 			 */
-	//		/*int i = */getStatement().executeUpdate(
-	//					"INSERT INTO actividad VALUES ('" + codActividad + "' )"
-	//					);
+			String sent = "INSERT INTO principal VALUES ("+codActividad+" , "+codActividad + " ,"+ codActividad + ", "+codActividad+" , 20100502); ";
+			System.out.println(sent);
+
+			/*int i = */getStatement().executeUpdate(sent);
 
 			
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//			System.out.println("Fallo en el update: \n" + e.getMessage());
+		} catch (SQLException e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Fallo en el update: \n" + e.getMessage());
+			System.out.println("Fallo en el update: \n" + e.getMessage());
 
-//		}
+		}
 	}
 
 
