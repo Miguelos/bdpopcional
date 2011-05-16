@@ -1,4 +1,6 @@
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.SQLException;
 
 import javax.swing.JButton;
@@ -40,8 +42,15 @@ public class PanelInsertar extends PanelSQL{
 	public JButton getInsertarButton() {
 		if(insertarButton == null){
 			insertarButton = new JButton("Insertar");
-//			insertar((String) getCodActividad().getSelectedItem().toString()/*...*/);
-		}
+			insertarButton.addActionListener(new ActionListener(){
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					insertar((String) getCodActividadBox().getSelectedItem().toString()
+							/*...*/);
+				}
+				
+			});		}
 		return insertarButton;
 	}
 

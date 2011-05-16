@@ -160,7 +160,6 @@ public class Principal extends JFrame{
 			//Conectar con la base de datos
 			getConnection(); //esta linea no es necesaria.
 			getStatement();
-			getStatement().executeUpdate("insert into maestra_actividad values (666,666);");
 			
 			//Crear la interfaz
 			Principal.getInstance();
