@@ -113,7 +113,7 @@ public class PanelSQL extends JPanel{
 		if(codActividadBox == null){
 			// Mostrar los codigos de actividad disponibles
 			try {
-			ResultSet rs = (ResultSet) getStatement().executeQuery("select distinct x from maestra_actividad;");
+			ResultSet rs = (ResultSet) getStatement().executeQuery("select distinct id from maestra_actividades;");
 			rs.last();
 			int rowCount = rs.getRow();
 			rs.first();
@@ -132,28 +132,32 @@ public class PanelSQL extends JPanel{
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-		
-
 		}
 		return codActividadBox;
 	}
 
 	public JComboBox getProductorBox() {
 		if(productorBox == null){
-			Object[] lista = {"123","321","213"};;
-			// Mostrar los codigos de actividad disponibles
-//			try {
-	//			ResultSet rs = (ResultSet) getStatement().executeQuery(/*TODO obtener todos los cod actividad*/"");
-				//TODO obtener los strings del resultset rs
-				
-//				rs.close();
-				
-//			} catch (SQLException e) {
-//				e.printStackTrace();
-//			}
-			
-			productorBox = new JComboBox(lista);
-
+			try {
+				ResultSet rs = (ResultSet) getStatement().executeQuery("select distinct id from maestra_productor;");
+				rs.last();
+				int rowCount = rs.getRow();
+				rs.first();
+				Object[] lista = new Object[rowCount];
+				lista[0] = rs.getObject(1);
+				System.out.println("ROWCOUNT"+rowCount);
+					//TODO obtener los strings del resultset rs
+				int i = 1;
+				while (rs.next()){
+					   lista[i] = rs.getObject(1);
+					   System.out.println(i);
+					   i++;
+					}
+					rs.close();
+					productorBox = new JComboBox(lista);	
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
 		}
 		return productorBox;
 	}

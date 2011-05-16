@@ -1,4 +1,6 @@
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.SQLException;
 
 import javax.swing.JButton;
@@ -20,6 +22,8 @@ public class PanelConsulta extends PanelSQL{
 	private JButton consultarButton = null;
 	
 	private JTable consultaTable = null;
+	
+	private DefaultTableModel modelo = null;
 	
 	/**
 	 * Método getInstance del patrón Singleton
@@ -45,7 +49,15 @@ public class PanelConsulta extends PanelSQL{
 	public JButton getConsultarButton() {
 		if(consultarButton == null){
 			consultarButton = new JButton("Consultar");
-			//consultar((String) getCodActividad().getSelectedItem().toString()/*...*/);
+			consultarButton.addActionListener(new ActionListener(){
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					consultar((String) getCodActividadBox().getSelectedItem().toString()
+							/*...*/);
+				}
+				
+			});
 		}
 		return consultarButton;
 	}
@@ -55,6 +67,12 @@ public class PanelConsulta extends PanelSQL{
 	}
 
 	public JTable getConsultaTable() {
+		if(consultaTable == null){
+			consultaTable = new JTable();
+			consultaTable.setEnabled(true);
+			consultaTable.setVisible(true);
+			repaint();
+		}
 		return consultaTable;
 	}
 
@@ -67,40 +85,55 @@ public class PanelConsulta extends PanelSQL{
 			/*
 			 * Ejecutar la consulta sql
 			 */
-			ResultSet rs = (ResultSet) getStatement().executeQuery("select * from actividad where codActividad = " + codActividad);
+
+			ResultSet rs = (ResultSet) getStatement().executeQuery("select * from principal where act="+codActividad+";");
 
 			/*
 			 * METER EL ResultSet en el JTable
 			 * 	Para meter los datos en el JTable, usaremos un DefaultTableModel.
 			 *  Para ello basta con instanciar el JTable de esta forma
 			 */
-			DefaultTableModel modelo = new DefaultTableModel();
+			modelo = new DefaultTableModel();
 			setConsultaTable(new JTable(modelo));
-	
+			modelo.addColumn("cod_Actividad");
+			modelo.addColumn("Productor");
+			modelo.addColumn("Parcela");
+			modelo.addColumn("Abono");
+			modelo.addColumn("Fecha");
+			rs.last();
+			int rowCount = rs.getRow();
+			System.out.println("ROWCOUNTnuevo"+rowCount);
+			rs.first();
+			Object[] fila = new Object[5];
+			fila[0] = rs.getObject(1);
+			fila[1] = rs.getObject(2);
+			fila[2] = rs.getObject(3);
+			fila[3] = rs.getObject(4);
+			fila[4] = rs.getObject(5).toString();
+			modelo.addRow(fila);
 			/*
 			 * Ahora sólo hay que rellenar el DefaultTableModel con los datos del ResultSet.
 			 *  La forma "manual" de hacer esto es la siguiente
 			 *  Creamos las columnas.
 			 */
-			modelo.addColumn("Cod_Actividad");
-			modelo.addColumn("...");
-			modelo.addColumn("Abono");
+
 			
 			// Bucle para cada resultado en la consulta
 			while (rs.next()){
 			   // Se crea un array que será una de las filas de la tabla.
-			   Object [] fila = new Object[3]; // Hay tres columnas en la tabla
 
 			   // Se rellena cada posición del array con una de las columnas de la tabla en base de datos.
-			   for (int i=0;i<3;i++)
+			   for (int i=0;i<5;i++)
 			      fila[i] = rs.getObject(i+1); // El primer indice en rs es el 1, no el cero, por eso se suma 1.
 
 			   // Se añade al modelo la fila completa.
 			   modelo.addRow(fila);
 			}
 			
-			getConsultaTable().setEnabled(true);
-			getConsultaTable().setVisible(true);
+			getConsultaTable().removeAll();
+			getConsultaTable().setModel(modelo);
+			add(getConsultaTable(), BorderLayout.CENTER);
+			System.out.println(getConsultaTable().toString());
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
