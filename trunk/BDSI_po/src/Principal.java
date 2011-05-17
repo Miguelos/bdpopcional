@@ -8,6 +8,9 @@ import java.sql.SQLException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
+import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -134,7 +137,7 @@ public class Principal extends JFrame{
 		if(connection == null){
 			//DriverManager.registerDriver(new Driver());
 			DriverManager.registerDriver(new com.mysql.jdbc.Driver());
-			connection = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/test", "root", "mysql121");
+			connection = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/test", "root", "root");
 		}
 		return connection;
 	}
@@ -155,12 +158,14 @@ public class Principal extends JFrame{
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		try
-		{	
+		try {
+		    // Ajustar la interfaz a la apariencia del sistema. 
+	        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+	        
 			//Conectar con la base de datos
 			getConnection(); //esta linea no es necesaria.
 			getStatement();
-			
+
 			//Crear la interfaz
 			Principal.getInstance();
 			
@@ -168,13 +173,24 @@ public class Principal extends JFrame{
 			//getStatement().close();
 			 
 		} 
-		catch (Exception e)
-		{
+		catch (SQLException sqle){
+			sqle.printStackTrace();
+			JOptionPane.showMessageDialog(null, " Error al intentar conectar con la base de datos. \n" + sqle.getMessage());
+		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-			System.out.println("¡ERROR! \n" + e.getMessage());
-		} 
+			JOptionPane.showMessageDialog(null, " Error en la interfaz. \n" + e.getMessage());
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, " Error en la interfaz. \n" + e.getMessage());
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, " Error en la interfaz. \n" + e.getMessage());
+		} catch (UnsupportedLookAndFeelException e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, " Error en la interfaz. \n" + e.getMessage());
+		}
 	}
-	
+
 	/**
 	 * El metodo "clone" es sobreescrito por el siguiente que arroja una excepción:
 	 */
