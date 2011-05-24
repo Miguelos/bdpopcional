@@ -1,19 +1,15 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Array;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableColumnModel;
 
 import com.mysql.jdbc.ResultSetMetaData;
 
@@ -32,9 +28,8 @@ public class PanelConsulta extends PanelSQL{
 	
 	private JButton consultarButton = null;
 	
-	private JTable consultaTable = null;
 	private JPanel tablaPanel = null;
-
+	private JTable consultaTable = null;
 	private DefaultTableModel modelo = null;
 	
 	/**
@@ -71,12 +66,19 @@ public class PanelConsulta extends PanelSQL{
 	public JButton getConsultarButton() {
 		if(consultarButton == null){
 			consultarButton = new JButton("Consultar");
+			consultarButton.setBackground(Color.BLACK);
 			consultarButton.addActionListener(new ActionListener(){
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					consultar((String) getCodActividadBox().getSelectedItem().toString()
-							/*...*/);
+					java.sql.Timestamp ts = null; 
+					if(getCalendario() != null) ts = new java.sql.Timestamp(getCalendario().getDate().getTime());
+					consultar(getCodActividadBox().getSelectedItem(),
+							getProductorBox().getSelectedItem(),
+							getParcelaBox().getSelectedItem(),
+							getCodAbonoBox().getSelectedItem(),
+							ts
+							);
 				}
 				
 			});
@@ -97,7 +99,9 @@ public class PanelConsulta extends PanelSQL{
 			consultaTable.setRowSelectionAllowed(true);
 			consultaTable.setColumnSelectionAllowed(true);
 			consultaTable.setGridColor(Color.gray);
-			//consultaTable.
+			consultaTable.setFocusable(false);
+			consultaTable.setCellSelectionEnabled(false);
+			consultaTable.setDragEnabled(false);
 			consultaTable.setEnabled(true);
 			consultaTable.setVisible(true);
 			repaint();
@@ -107,16 +111,50 @@ public class PanelConsulta extends PanelSQL{
 
 	/**
 	 * http://www.chuidiang.com/java/mysql/resultset_jtable.php
-	 * @param codActividad
+	 * @param object
 	 */
-	public void consultar(String codActividad/*...*/){
+	public void consultar(Object act, Object prod, Object parc, Object abo, Timestamp timestamp ){
 		try {
 			/*
 			 * Ejecutar la consulta sql
 			 */
+			boolean anterior = false;
+			String sent = "select * from principal where ";
+			if(act != null){
+				sent += "act="+act.toString();
+				anterior = true; 
+			}
+			if(prod != null){
+				if(anterior) sent += " and ";
+				sent += "prod="+prod.toString();
+				anterior = true;
+			}
+			if(parc != null){
+				if(anterior) sent += " and ";
+				sent += "parc="+parc.toString();				
+				anterior = true;
+			}
+			if(abo != null){
+				if(anterior) sent += " and ";
+				sent += "abo="+abo.toString();
+				anterior = true;
+			}
+			if(timestamp != null){
+				if(anterior) sent += " AND ";
+				sent += "fecha='"+timestamp.toString()+"'";
+				anterior = true;
+			}
+			sent += ";";
 
-			ResultSet rs = (ResultSet) getStatement().executeQuery("select * from principal where act="+codActividad+";");
-			//ResultSet rs = (ResultSet) getStatement().executeQuery("select * from principal ");
+			if(!anterior){
+				//No hay ninguna condición en el where:
+				sent = "select * from principal;";
+			}
+
+			System.out.println(sent);
+			
+			
+			ResultSet rs = (ResultSet) getStatement().executeQuery(sent);
 
 			ResultSetMetaData rsmd = (ResultSetMetaData) rs.getMetaData();
 			/*
@@ -127,34 +165,20 @@ public class PanelConsulta extends PanelSQL{
 			
 			int rowCount = rsmd.getColumnCount();
 			
-			Vector cabecera = new Vector();
+			Vector<Object> cabecera = new Vector<Object>();
 			
-			Vector<Vector<Object>> datos = new Vector();
-
+			Vector<Vector<Object>> datos = new Vector<Vector<Object>>();
+			
 			for(int i = 1; i<=rowCount; i++) {
 				cabecera.addElement(rsmd.getColumnName(i));
 			}
-			
-			datos.add(cabecera);//TODO mal esto se supone que no hace falta
-		
-
-			Vector fila = new Vector();
-/*			fila[0] = rs.getObject(1);
-			fila[1] = rs.getObject(2);
-			fila[2] = rs.getObject(3);
-			fila[3] = rs.getObject(4);
-			fila[4] = rs.getObject(5).toString();
-			datos.addElement(fila);
-	*/		
-			/*
-			 * Ahora sólo hay que rellenar el DefaultTableModel con los datos del ResultSet.
-			 *  La forma "manual" de hacer esto es la siguiente
-			 *  Creamos las columnas.
-			 */
+	
+			datos.add(cabecera);
 
 			// Bucle para cada resultado en la consulta
 			while (rs.next()){
 			   // Se crea un array que será una de las filas de la tabla.
+				Vector<Object> fila = new Vector<Object>();
 
 			   // Se rellena cada posición del array con una de las columnas de la tabla en base de datos.
 			   for (int i = 1; i<= rowCount; i++)
@@ -164,10 +188,9 @@ public class PanelConsulta extends PanelSQL{
 				datos.addElement(fila);
 			}
 			
-			
+
 			modelo = new DefaultTableModel(datos,cabecera);
 			setConsultaTable(modelo);
-			System.out.println(getConsultaTable().toString());
 			
 		} catch (SQLException e) {
 			e.printStackTrace();

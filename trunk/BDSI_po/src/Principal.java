@@ -10,15 +10,10 @@ import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.sql.Statement;
 
-//import com.mysql.jdbc.Connection;
-//import com.mysql.jdbc.Statement;
 
 
 public class Principal extends JFrame{
@@ -62,7 +57,7 @@ public class Principal extends JFrame{
 		super();
 		setLayout(new BorderLayout());
 		setJMenuBar(getprincipalMenu());
-		setSize(new Dimension(500, 400));
+		setSize(new Dimension(600, 300));
 		setLocationRelativeTo(null);
 		setVisible(true);
 		setEnabled(true);
@@ -96,7 +91,7 @@ public class Principal extends JFrame{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					setContentPane(PanelConsulta.getInstance());
-					setSize(500, 300);
+					setSize(600, 400);
 
 				}
 				
@@ -118,7 +113,7 @@ public class Principal extends JFrame{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					setContentPane(PanelInsertar.getInstance());
-					setSize(500, 200);
+					setSize(600, 399);
 
 				}
 				
@@ -162,6 +157,7 @@ public class Principal extends JFrame{
 		    // Ajustar la interfaz a la apariencia del sistema. 
 	        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 	        
+	        
 			//Conectar con la base de datos
 			getConnection(); //esta linea no es necesaria.
 			getStatement();
@@ -172,20 +168,10 @@ public class Principal extends JFrame{
 			//Cerrar la conexión con la base de datos
 			//getStatement().close();
 			 
-		} 
-		catch (SQLException sqle){
+		} catch (SQLException sqle){
 			sqle.printStackTrace();
 			JOptionPane.showMessageDialog(null, " Error al intentar conectar con la base de datos. \n" + sqle.getMessage());
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, " Error en la interfaz. \n" + e.getMessage());
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, " Error en la interfaz. \n" + e.getMessage());
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, " Error en la interfaz. \n" + e.getMessage());
-		} catch (UnsupportedLookAndFeelException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, " Error en la interfaz. \n" + e.getMessage());
 		}
