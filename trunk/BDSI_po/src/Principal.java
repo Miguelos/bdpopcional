@@ -132,7 +132,7 @@ public class Principal extends JFrame{
 		if(connection == null){
 			//DriverManager.registerDriver(new Driver());
 			DriverManager.registerDriver(new com.mysql.jdbc.Driver());
-			connection = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/test", "root", "root");
+			connection = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/test", "root", "mysql121");
 		}
 		return connection;
 	}

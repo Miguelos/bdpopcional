@@ -116,10 +116,10 @@ public class PanelSQL extends JPanel{
 				int rowCount = rs.getRow();
 				rs.first();
 				Object[] lista = new Object[rowCount+1];
-				lista[1] = rs.getObject(1);
+				lista[1] = rs.getObject(2);
 				int i = 2;
 				while (rs.next()){
-					   lista[i] = rs.getObject(1);
+					   lista[i] = rs.getObject(2);
 					   i++;
 				}
 				rs.close();
@@ -139,10 +139,10 @@ public class PanelSQL extends JPanel{
 				int rowCount = rs.getRow();
 				rs.first();
 				Object[] lista = new Object[rowCount+1];
-				lista[1] = rs.getObject(1);
+				lista[1] = rs.getObject(2);
 				int i = 2;
 				while (rs.next()){
-					   lista[i] = rs.getObject(1);
+					   lista[i] = rs.getObject(2);
 					   i++;
 					}
 					rs.close();
@@ -162,10 +162,10 @@ public class PanelSQL extends JPanel{
 				int rowCount = rs.getRow();
 				rs.first();
 				Object[] lista = new Object[rowCount+1];
-				lista[1] = rs.getObject(1);
+				lista[1] = rs.getObject(2);
 				int i = 2;
 				while (rs.next()){
-					   lista[i] = rs.getObject(1);
+					   lista[i] = rs.getObject(2);
 					   i++;
 				}
 				rs.close();
@@ -187,10 +187,10 @@ public class PanelSQL extends JPanel{
 				int rowCount = rs.getRow();
 				rs.first();
 				Object[] lista = new Object[rowCount+1];
-				lista[1] = rs.getObject(1);
+				lista[1] = rs.getObject(2);
 				int i = 2;
 				while (rs.next()){
-					   lista[i] = rs.getObject(1);
+					   lista[i] = rs.getObject(2);
 					   i++;
 				}
 				rs.close();

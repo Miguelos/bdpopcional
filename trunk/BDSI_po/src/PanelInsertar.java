@@ -2,6 +2,7 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
@@ -79,7 +80,24 @@ public class PanelInsertar extends PanelSQL{
 			/*
 			 * Ejecutar la consulta sql
 			 */			
-			String sent = "INSERT INTO principal VALUES ("+act+" , "+prod+" ,"+parc+", "+abo+" , '"+timestamp.toString()+"'); ";
+			/*Busqueda de códigos*/
+			String consultaAct = "select id from maestra_actividades where descr=\""+act.toString()+"\";";
+			ResultSet rsAct = (ResultSet) getStatement().executeQuery(consultaAct);
+			rsAct.first();
+			String sent = "INSERT INTO principal VALUES ("+rsAct.getObject(1)+" , ";
+			String consultaProd = "select id from maestra_productor where descr=\""+prod.toString()+"\";";
+			ResultSet rsProd = (ResultSet) getStatement().executeQuery(consultaProd);
+			rsProd.first();
+			sent += ""+rsProd.getObject(1)+" ,";
+			String consultaParc = "select id from maestra_parcela where descr=\""+parc.toString()+"\";";
+			ResultSet rsParc = (ResultSet) getStatement().executeQuery(consultaParc);
+			rsParc.first();
+			sent += ""+rsParc.getObject(1)+" ,";
+			String consultaAbo = "select id from maestra_abono where descr=\""+abo.toString()+"\";";
+			ResultSet rsAbo = (ResultSet) getStatement().executeQuery(consultaAbo);
+			rsAbo.first();
+			sent += ""+rsAbo.getObject(1)+" , '"+timestamp.toString()+"'); ";
+			/*String sent = "INSERT INTO principal VALUES ("+rsAct.getObject(1)+" , "+rsProd.getObject(1)+" ,"+rsParc.getObject(1)+", "+rsAbo.getObject(1)+" , '"+timestamp.toString()+"'); ";*/
 
 			/*int i = */getStatement().executeUpdate(sent);
 
