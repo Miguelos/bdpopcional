@@ -118,25 +118,42 @@ public class PanelConsulta extends PanelSQL{
 			/*
 			 * Ejecutar la consulta sql
 			 */
+
 			boolean anterior = false;
 			String sent = "select * from principal where ";
 			if(act != null){
-				sent += "act="+act.toString();
+				/*Busqueda del código de actividad*/
+				String consultaAct = "select id from maestra_actividades where descr=\""+act.toString()+"\";";
+				ResultSet rsAct = (ResultSet) getStatement().executeQuery(consultaAct);
+				rsAct.first();
+				sent += "act="+rsAct.getObject(1);
 				anterior = true; 
 			}
 			if(prod != null){
+				/*Busqueda del código de productor*/
+				String consultaAct = "select id from maestra_productor where descr=\""+prod.toString()+"\";";
+				ResultSet rsAct = (ResultSet) getStatement().executeQuery(consultaAct);
+				rsAct.first();
 				if(anterior) sent += " and ";
-				sent += "prod="+prod.toString();
+				sent += "prod="+rsAct.getObject(1);
 				anterior = true;
 			}
 			if(parc != null){
+				/*Busqueda del código de parcela*/
+				String consultaAct = "select id from maestra_parcela where descr=\""+parc.toString()+"\";";
+				ResultSet rsAct = (ResultSet) getStatement().executeQuery(consultaAct);
+				rsAct.first();
 				if(anterior) sent += " and ";
-				sent += "parc="+parc.toString();				
+				sent += "parc="+rsAct.getObject(1);		
 				anterior = true;
 			}
 			if(abo != null){
+				/*Busqueda del código de abono*/
+				String consultaAct = "select id from maestra_abono where descr=\""+abo.toString()+"\";";
+				ResultSet rsAct = (ResultSet) getStatement().executeQuery(consultaAct);
+				rsAct.first();
 				if(anterior) sent += " and ";
-				sent += "abo="+abo.toString();
+				sent += "abo="+rsAct.getObject(1);
 				anterior = true;
 			}
 			if(timestamp != null){
@@ -150,7 +167,7 @@ public class PanelConsulta extends PanelSQL{
 				//No hay ninguna condición en el where:
 				sent = "select * from principal;";
 			}
-
+			
 			System.out.println(sent);
 			
 			
@@ -188,7 +205,6 @@ public class PanelConsulta extends PanelSQL{
 				datos.addElement(fila);
 			}
 			
-
 			modelo = new DefaultTableModel(datos,cabecera);
 			setConsultaTable(modelo);
 			
